@@ -17,7 +17,7 @@ def validate_input(theta: np.array, p_theta: np.array, data: np.array):
         raise Exception("Data values must be 0 or 1")
         
         
-def plot_bern_grid(theta: np.array, p_theta: np.array, data: np.array):
+def plot_bern_grid(theta: np.array, p_theta: np.array, data: np.array, plot_type="bars"):
     validate_input(theta, p_theta, data)
     
     z = data.sum()
@@ -28,10 +28,18 @@ def plot_bern_grid(theta: np.array, p_theta: np.array, data: np.array):
     p_theta_given_data = (p_data_given_theta * p_theta) / p_data
     
     f, (prior_plot, likelihood_plot, posterior_plot) = plt.subplots(3, 1)
-
-    sns.lineplot(x=theta.round(1), y=p_theta, color="blue", ax=prior_plot)
-    sns.lineplot(x=theta.round(1), y=p_data_given_theta, color="blue", ax=likelihood_plot)
-    sns.lineplot(x=theta.round(1), y=p_theta_given_data, color="blue", ax=posterior_plot)
+    
+    if plot_type == "bars":
+        plot_method = sns.barplot
+    elif plot_type == "line":
+        plot_method = sns.lineplot
+    else:
+        raise NotImplementedException
+    
+    
+    plot_method(x=theta.round(1), y=p_theta, color="blue", ax=prior_plot)
+    plot_method(x=theta.round(1), y=p_data_given_theta, color="blue", ax=likelihood_plot)
+    plot_method(x=theta.round(1), y=p_theta_given_data, color="blue", ax=posterior_plot)
 
     prior_plot.set_title("Prior")
     prior_plot.set_ylabel("P(θ)")
